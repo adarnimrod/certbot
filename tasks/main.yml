@@ -5,4 +5,28 @@
   assert:
     that:
         - ansible_os_family in ['OpenBSD', 'Debian']
-        - ansible_distribution_release in ['6.0', '5.9', 'xenial', 'trusty', 'precise', 'stretch', 'jessie', 'wheezy']
+        - ansible_distribution_release in ['6.0', '5.9', 'xenial', 'trusty', 'precise', 'stretch', 'jessie']
+        - certbot_config is iterable
+        - certbot_config['domains'] is defined
+
+- name: APT install
+  when: ansible_pkg_mgr == 'apt'
+  apt:
+      name: letsencrypt
+      state: present
+      update_cache: yes
+      cache_valid_time: 3600
+
+- name: pkg add
+  when: ansible_pkg_mgr == 'openbsd_pkg'
+  openbsd_pkg:
+      name: letsencrypt
+      state: present
+
+- name: Copy config
+  template:
+      src: cli.ini
+      dest: /etc/letsencrypt/cli.ini
+      owner: root
+      group: 0
+      mode: 0o0644

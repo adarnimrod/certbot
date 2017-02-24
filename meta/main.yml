@@ -12,14 +12,16 @@ galaxy_info:
   - name: Ubuntu
     versions:
     - xenial
-    - trusty
-    - precise
   - name: Debian
     versions:
     - stretch
     - jessie
-    - wheezy
   galaxy_tags: [ ansible ]
 dependencies:
     - name: python27
       src: adarnimrod.python27
+    - name: backports
+      src: adarnimrod.backports
+      when: ansible_os_family == 'Debian' and ansible_distribution_release == 'jessie'
+    - name: ca-store
+      src: adarnimrod.ca-store
